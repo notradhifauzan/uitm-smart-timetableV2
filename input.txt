@@ -1,3 +1,5 @@
+test case #1
+
 tjc501
 elc650
 csc508
@@ -8,3 +10,25 @@ csc566
 
 
 so far this is the best test case to experiment things
+
+============================================================
+
+test case #2
+
+csc508
+csc577
+ent600
+csc584
+tjc501
+csc566
+
+=============================================================
+
+test case #3
+
+ICT652
+CSC662
+CSP650
+CSC683
+CSC566
+CSC580

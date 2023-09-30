@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
+import { Loading } from '../components/Loading';
 
 export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList }) => {
     const navigate = useNavigate()
@@ -212,6 +213,10 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                     style={{ height: '500px' }}
                     hoursInterval={{ from: 8, to: 19 }}
                 />
+            )}
+
+            {loading && (
+                <Loading/>
             )}
         </div>
     );

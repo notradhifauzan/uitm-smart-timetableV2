@@ -1,18 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import genetic_gif from './assets/genetic_loading.gif'
 
 export const Loading = () => {
+    const [loadingMessage, setLoadingMessage] = useState([])
+
+    useEffect(() => {
+        const data = [...loadingMessage]
+        // Add informative loading messages
+        data.push('This may take a while, we are trying to come up with the best timetable according to your configurations.');
+        data.push('Generating your timetable... Please wait while these \'genetics\' do their work.');
+        data.push('Searching for the perfect schedule just for you.');
+
+        // Add motivational messages
+        data.push('Hang tight! We\'re making your schedule awesome.');
+        data.push('The magic is happening behind the scenes.');
+        data.push('Good things come to those who wait. Your ideal schedule is on the way.');
+
+        // Add fun messages
+        data.push('Grab a snack while we work our magic.');
+        data.push('Enjoy some elevator music while we crunch the numbers.');
+        data.push('Counting down the seconds to your perfect timetable.');
+
+        // Add tips or trivia
+        data.push('Did you know? Scheduling is like solving a puzzle.');
+        data.push('Tip: You can adjust your preferences later if needed.');
+        data.push('Fun Fact: The best schedules often have a bit of randomness.');
+
+        setLoadingMessage(data)
+    }, [])
+
     return (
         <>
-            <div class="px-4 py-5 my-5 text-center">
-                <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"/>
-                    <h1 class="display-5 fw-bold text-body-emphasis">Centered hero</h1>
-                    <div class="col-lg-6 mx-auto">
-                        <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
-                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                            <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-                            <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
-                        </div>
-                    </div>
+            <div className="px-4 py-5 my-5 text-center">
+                <img className="d-block mx-auto mb-4" src={genetic_gif} alt="" width="100" height="100" />
+                <h3 className="display-5 fw-bold text-body-emphasis">Loading ...</h3>
+                <div className="col-lg-6 mx-auto">
+                    <p className="lead mb-4">{loadingMessage[(Math.floor(Math.random()*loadingMessage.length))]}</p>
+                </div>
             </div>
         </>
     )
