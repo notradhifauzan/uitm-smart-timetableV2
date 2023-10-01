@@ -106,7 +106,6 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                         startTime: new Date(timeStartISO), // Adjust the date as needed
                         endTime: new Date(timeEndISO), // Adjust the date as needed
                         type: 'custom', // Set the event type as needed
-                        background: "#F5BB00"
                     };
 
                     // Determine the day of the week (e.g., "monday")
@@ -157,7 +156,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
     }
 
     const goToCourseSetup = () => {
-        return navigate("/configureCourses",{replace:true})
+        return navigate("/configureCourses", { replace: true })
     }
 
     const navbarStyle = {
@@ -180,7 +179,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                 </button>
 
                 <button onClick={goToCourseSetup} className={isButtonConfigureEnabled()} type="button">
-                    configure courses <i class="fa-solid fa-gear"></i>
+                    configure courses <i className="fa-solid fa-gear"></i>
                 </button>
 
                 <div className="flex-grow-1"></div>
@@ -210,13 +209,13 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                     return sortedEvents;
                 }, {})}
 
-                    style={{ height: '500px' }}
+                    style={{ height: '500px'}}
                     hoursInterval={{ from: 8, to: 19 }}
                 />
             )}
 
             {loading && (
-                <Loading/>
+                <Loading />
             )}
         </div>
     );

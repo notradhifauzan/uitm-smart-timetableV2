@@ -28,7 +28,7 @@ class Session {
     }
 }
 
-export const SetupCourses = ({ randomizeOptions, setRandomizeOptions, courseData,
+export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions, courseData,
     setCourseData, campusCode, courseList,
     avoidGroupList, setAvoidGroupList,
     registeredCourseList, setRegisteredCourseList }) => {
@@ -46,7 +46,13 @@ export const SetupCourses = ({ randomizeOptions, setRandomizeOptions, courseData
     useEffect(() => {
         // Function to fetch course data for a single course code
         const fetchCourseData = async (code) => {
-            const url = `http://127.0.0.1:8000/get_course_data/${campusCode}/${code}`;
+            let url = '';
+            if(facultyCode == ''){
+                url = `http://127.0.0.1:8000/get_course_data/${campusCode}/${code}`;
+            } else {
+                url = `http://127.0.0.1:8000/get_course_data/${campusCode}/${code}?faculty_code=${facultyCode}`;
+            }
+            
             try {
                 const response = await fetch(url);
                 if (!response.ok) {

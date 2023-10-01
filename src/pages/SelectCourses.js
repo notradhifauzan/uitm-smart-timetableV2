@@ -3,7 +3,7 @@ import { useFetch } from '../hooks/useFetch'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 
-export const SelectCourses = ({ campusCode, courseList, setCourseList }) => {
+export const SelectCourses = ({ facultyCode,setFacultyCode,campusCode, courseList, setCourseList }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -50,15 +50,19 @@ export const SelectCourses = ({ campusCode, courseList, setCourseList }) => {
     let suggestions = [];
 
     // handling the response
-    const url = "http://127.0.0.1:8000/get_course_code/" + campusCode;
+    let url = '';
+    if(facultyCode == ''){
+        url = "http://127.0.0.1:8000/get_course_code/" + campusCode;
+    } else {
+        url = "http://127.0.0.1:8000/get_course_code/" + campusCode + '?faculty_code=' + facultyCode;
+    }
+
     const { data: course_codes, loading, error } = useFetch(url);
 
     if (!loading && !error && course_codes && Array.isArray(course_codes.course_codes)) {
         const allCourseCodes = course_codes.course_codes.flat();
         suggestions = allCourseCodes;
     }
-    
-
 
     // dynamically filter course code
     suggestions = suggestions.filter(code => code.toUpperCase().includes(value.toUpperCase()))

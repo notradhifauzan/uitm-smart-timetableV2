@@ -6,6 +6,7 @@ import { ProcessData } from '../pages/ProcessData';
 import { ConfigureCourses } from '../pages/ConfigureCourses';
 
 export const AllRoutes = () => {
+    const [facultyCode, setFacultyCode] = useState("");
     const [campusCode, setCampusCode] = useState("");
     const [courseList, setCourseList] = useState([]);
     const [courseData, setCourseData] = useState({});
@@ -22,14 +23,23 @@ export const AllRoutes = () => {
                         <SelectCampus
                             campusCode={campusCode}
                             setCampusCode={setCampusCode}
+                            facultyCode={facultyCode}
+                            setFacultyCode={setFacultyCode}
                         />
                     }></Route>
                     <Route
                         path='/selectCourses'
-                        element={<SelectCourses campusCode={campusCode} courseList={courseList} setCourseList={setCourseList} />}>
+                        element={
+                            <SelectCourses
+                                facultyCode = {facultyCode}
+                                campusCode={campusCode}
+                                courseList={courseList}
+                                setCourseList={setCourseList} />
+                        }>
                     </Route>
                     <Route path='/setupCourses' element={
                         <SetupCourses
+                            facultyCode = {facultyCode}
                             randomizeOptions={randomizeOptions}
                             setRandomizeOptions={setRandomizeOptions}
                             courseData={courseData}
