@@ -13,6 +13,7 @@ export const AllRoutes = () => {
     const [avoidGroupList, setAvoidGroupList] = useState([[]]);
     const [randomizeOptions, setRandomizeOptions] = useState([]);
     const [registeredCourseList, setRegisteredCourseList] = useState([]);
+    const [timetable,setTimetable] = useState({})
 
     return (
         <>
@@ -60,6 +61,7 @@ export const AllRoutes = () => {
                                 avoidGroupList={avoidGroupList}
                                 randomizeOptions={randomizeOptions}
                                 registeredCourseList={registeredCourseList}
+                                setTimetable = {setTimetable}
                             />
                         }
                     />
@@ -74,6 +76,7 @@ export const AllRoutes = () => {
                                 setAvoidGroupList={setAvoidGroupList}
                                 registeredCourseList={registeredCourseList}
                                 setRegisteredCourseList={setRegisteredCourseList}
+                                timetable = {timetable}
                             />}>
                     </Route>
                 </Routes>

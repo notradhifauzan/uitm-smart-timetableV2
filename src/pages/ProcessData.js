@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
 import { Loading } from '../components/Loading';
 
-export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList }) => {
+export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList,setTimetable }) => {
     const navigate = useNavigate()
     const [clashCount, setClashCount] = useState(1);
     const [responseMessage, setResponseMessage] = useState({});
@@ -121,6 +121,8 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                 });
             });
         });
+
+        setTimetable(events);
     }
 
     // Sort the days of the week

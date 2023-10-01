@@ -24,6 +24,7 @@ export const Loading = () => {
         // Add tips or trivia
         data.push('Did you know? Scheduling is like solving a puzzle.');
         data.push('Tip: You can adjust your preferences later if needed.');
+        data.push('Tip: You can run multiple times to view different solutions.');
         data.push('Fun Fact: The best schedules often have a bit of randomness.');
 
         setLoadingMessage(data)
