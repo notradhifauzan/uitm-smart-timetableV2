@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
 import { Loading } from '../components/Loading';
+import { DataReady } from '../components/DataReady';
 
 export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList, timetable, setTimetable }) => {
     const navigate = useNavigate()
@@ -24,6 +25,8 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
         } else {
             setEnableProcessButton(true)
         }
+
+        console.log(JSON.stringify(responseMessage) === '{}')
     }, [])
 
     const sendDataToAPI = async () => {
@@ -129,7 +132,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
         } else {
             console.log('still loading')
         }
-    }, [loading,responseMessage]) // wait for loading and response message, then can setTimetable
+    }, [loading, responseMessage]) // wait for loading and response message, then can setTimetable
 
     useEffect(() => {
         // Sort the days of the week
@@ -231,6 +234,10 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
 
             {loading && (
                 <Loading />
+            )}
+
+            {(enableProcessButton && JSON.stringify(responseMessage) === '{}' && !loading) && (
+                <DataReady />
             )}
         </div>
     );

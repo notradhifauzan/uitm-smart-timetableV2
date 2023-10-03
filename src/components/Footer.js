@@ -8,7 +8,7 @@ export const Footer = () => {
           <a href="/" className="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
             <svg className="bi" width="30" height="24"></svg>
           </a>
-          <span className="mb-3 mb-md-0 text-body-secondary">&copy; 2023 Radhi Fauzan</span>
+          <span className="mb-3 mb-md-0 text-body-secondary">&copy; 2023 Mohd Radhi Fauzan - Web based Personalized University Timetable For UiTM Students Using Genetic Algorithm</span>
         </div>
 
         <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">

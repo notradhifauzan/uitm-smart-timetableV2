@@ -43,12 +43,18 @@ export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, course
         return dayOfWeek[day1] - dayOfWeek[day2];
     });
 
+    const navbarStyle = {
+        borderTopLeftRadius: '10px',
+        borderTopRightRadius: '10px',
+        border: '1px solid #000',
+    };
+
     return (
         <>
-            <nav className="navbar bg-body-tertiary mt-3">
+            <nav className="navbar bg-body-tertiary mt-3" style={navbarStyle}>
                 <form className="container-fluid justify-content-start">
-                    <button onClick={(event) => handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed</button>
-                    <button onClick={() => setShow(true)} className="btn btn-sm btn-outline-secondary me-2" type="button">peek current timetable</button>
+                    <button onClick={(event) => handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed <i className="fa-solid fa-play"></i></button>
+                    <button onClick={() => setShow(true)} className="btn btn-sm btn-outline-secondary me-2" type="button">peek current timetable <i className="fa-regular fa-eye"></i></button>
                 </form>
             </nav>
             {/**for each course exist in the courseData state variable, I want to iterate this component below */}
