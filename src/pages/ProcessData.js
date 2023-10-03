@@ -107,7 +107,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                         const timeStartISO = convertTimeToISO(session.time_start)
                         const timeEndISO = convertTimeToISO(session.time_end)
                         const event = {
-                            id: Math.floor(Math.random() * 1000), // Generate a unique ID
+                            id: Math.floor(Math.random() * 10000), // Generate a unique ID
                             name: `${course.name} - ${group.name}`,
                             startTime: new Date(timeStartISO), // Adjust the date as needed
                             endTime: new Date(timeEndISO), // Adjust the date as needed
@@ -180,6 +180,8 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
     const navbarStyle = {
         borderTopLeftRadius: '10px',
         borderTopRightRadius: '10px',
+        borderBottomRightRadius: '10px',
+        borderBottomLeftRadius: '10px',
         border: '1px solid #000',
     };
 
@@ -191,7 +193,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                 </div>
             )}
 
-            <nav className="navbar navbar-expand-lg bg-body-tertiary mt-4" style={navbarStyle}>
+            <nav className="navbar navbar-expand-lg bg-body-tertiary mt-4 mb-2" style={navbarStyle}>
                 <button onClick={sendDataToAPI} className={isButtonSendEnabled()} type="button">
                     {dataSent ? 'run again' : 'start algorithm'} <i className="fa-solid fa-shuffle"></i>
                 </button>

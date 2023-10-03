@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { Toast } from 'react-bootstrap';
 
 class Group {
     constructor(name) {
@@ -19,19 +20,24 @@ export const CourseDetails = ({ course, index, randomizeOptions, setRandomizeOpt
     avoidGroupList, setAvoidGroupList,
     registeredCourseList, setRegisteredCourseList }) => {
 
+    const [showToast, setShowToast] = useState(false)
     // handling group to avoid (adding and removing)
     // adding
     const handleAvoidGroupSelection = (event, index) => {
         const newData = [...avoidGroupList];
         let gname = event.target.value;
 
-        console.log('gname: ', gname)
         if (gname.length === 0) {
             newData[index] = [];
             setAvoidGroupList(newData);
         } else {
             if (!newData[index].includes(gname)) {
-                handleAddAvoidGroupList(index, gname);
+                if (newData[index].length === course.groups.length - 1) {
+                    console.log('trying to break my system huh?')
+                    setShowToast(true)
+                } else {
+                    handleAddAvoidGroupList(index, gname);
+                }
             } else {
                 console.log('you already added this item');
             }
@@ -185,6 +191,18 @@ export const CourseDetails = ({ course, index, randomizeOptions, setRandomizeOpt
                 </div>
                 <p className="card-text mt-4">More constraints may lead to an inefficient or no solution.</p>
             </div>
+
+            <Toast className='mt-2 ms-2 mb-2' onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+                <Toast.Header>
+                    <img
+                        src="holder.js/20x20?text=%20"
+                        className="rounded me-2"
+                        alt=""
+                    />
+                    <strong className="me-auto">Warning</strong>
+                </Toast.Header>
+                <Toast.Body>So you're planning not to join any group?</Toast.Body>
+            </Toast>
         </div>
     )
 }

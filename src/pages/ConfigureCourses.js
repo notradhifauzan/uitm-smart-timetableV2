@@ -46,6 +46,8 @@ export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, course
     const navbarStyle = {
         borderTopLeftRadius: '10px',
         borderTopRightRadius: '10px',
+        borderBottomRightRadius: '10px',
+        borderBottomLeftRadius: '10px',
         border: '1px solid #000',
     };
 
