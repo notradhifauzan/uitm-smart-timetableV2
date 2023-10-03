@@ -61,6 +61,7 @@ export const AllRoutes = () => {
                                 avoidGroupList={avoidGroupList}
                                 randomizeOptions={randomizeOptions}
                                 registeredCourseList={registeredCourseList}
+                                timetable = {timetable}
                                 setTimetable = {setTimetable}
                             />
                         }

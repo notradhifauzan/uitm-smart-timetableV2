@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
 import { Loading } from '../components/Loading';
 
-export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList,setTimetable }) => {
+export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList, timetable, setTimetable }) => {
     const navigate = useNavigate()
+    const [newSortedDays, setSortedDays] = useState([])
     const [clashCount, setClashCount] = useState(1);
     const [responseMessage, setResponseMessage] = useState({});
     const [loading, setLoading] = useState(false);
@@ -89,57 +90,69 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
         return date.toISOString();
     };
 
-    const events = {};
+    useEffect(() => {
+        if (!loading && Array.isArray(responseMessage)) {
+            console.log('loading finished, initializing events')
+            // Check if responseMessage is an array
+            const events = {};
+            // Loop through responseMessage and populate events
+            const chromosome = responseMessage;
+            chromosome.forEach(course => {
+                course.groups.forEach(group => {
+                    group.sessions.forEach(session => {
+                        // Create an event object based on the session data
+                        const timeStartISO = convertTimeToISO(session.time_start)
+                        const timeEndISO = convertTimeToISO(session.time_end)
+                        const event = {
+                            id: Math.floor(Math.random() * 1000), // Generate a unique ID
+                            name: `${course.name} - ${group.name}`,
+                            startTime: new Date(timeStartISO), // Adjust the date as needed
+                            endTime: new Date(timeEndISO), // Adjust the date as needed
+                            type: 'custom', // Set the event type as needed
+                        };
 
-    if (!loading && Array.isArray(responseMessage)) { // Check if responseMessage is an array
-        // Loop through responseMessage and populate events
-        const chromosome = responseMessage;
-        chromosome.forEach(course => {
-            course.groups.forEach(group => {
-                group.sessions.forEach(session => {
-                    // Create an event object based on the session data
-                    const timeStartISO = convertTimeToISO(session.time_start)
-                    const timeEndISO = convertTimeToISO(session.time_end)
-                    const event = {
-                        id: Math.floor(Math.random() * 1000), // Generate a unique ID
-                        name: `${course.name} - ${group.name}`,
-                        startTime: new Date(timeStartISO), // Adjust the date as needed
-                        endTime: new Date(timeEndISO), // Adjust the date as needed
-                        type: 'custom', // Set the event type as needed
-                    };
+                        // Determine the day of the week (e.g., "monday")
+                        const dayOfWeek = session.day.toLowerCase();
 
-                    // Determine the day of the week (e.g., "monday")
-                    const dayOfWeek = session.day.toLowerCase();
+                        // Initialize the events array for the day if it doesn't exist
+                        if (!events[dayOfWeek]) {
+                            events[dayOfWeek] = [];
+                        }
 
-                    // Initialize the events array for the day if it doesn't exist
-                    if (!events[dayOfWeek]) {
-                        events[dayOfWeek] = [];
-                    }
-
-                    // Add the event to the corresponding day
-                    events[dayOfWeek].push(event);
+                        // Add the event to the corresponding day
+                        events[dayOfWeek].push(event);
+                    });
                 });
             });
+
+            setTimetable(events);
+        } else {
+            console.log('still loading')
+        }
+    }, [loading,responseMessage]) // wait for loading and response message, then can setTimetable
+
+    useEffect(() => {
+        // Sort the days of the week
+        console.log('sorting days...')
+        const sortedDays = Object.keys(timetable).sort((day1, day2) => {
+            // Convert day names to numbers (0 for Sunday, 1 for Monday, etc.)
+            const dayOfWeek = {
+                sunday: 0,
+                monday: 1,
+                tuesday: 2,
+                wednesday: 3,
+                thursday: 4,
+                friday: 5,
+                saturday: 6,
+            };
+
+            return dayOfWeek[day1] - dayOfWeek[day2];
         });
 
-        setTimetable(events);
-    }
+        setSortedDays(sortedDays)
+    }, [timetable]) // wait for timetable variable to be fully initialize, then can run this again
 
-    // Sort the days of the week
-    const sortedDays = Object.keys(events).sort((day1, day2) => {
-        // Convert day names to numbers (0 for Sunday, 1 for Monday, etc.)
-        const dayOfWeek = {
-            sunday: 0,
-            monday: 1,
-            tuesday: 2,
-            wednesday: 3,
-            thursday: 4,
-            friday: 5,
-            saturday: 6,
-        };
 
-        return dayOfWeek[day1] - dayOfWeek[day2];
-    });
 
     const isButtonSendEnabled = () => {
         if (loading) {
@@ -206,12 +219,12 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
             </nav>
 
             {(dataSent == true && loading == false) && (
-                <TimeTable events={sortedDays.reduce((sortedEvents, day) => {
-                    sortedEvents[day] = events[day];
+                <TimeTable events={newSortedDays.reduce((sortedEvents, day) => {
+                    sortedEvents[day] = timetable[day];
                     return sortedEvents;
                 }, {})}
 
-                    style={{ height: '500px'}}
+                    style={{ height: '500px' }}
                     hoursInterval={{ from: 8, to: 19 }}
                 />
             )}
