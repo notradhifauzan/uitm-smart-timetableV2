@@ -7,9 +7,10 @@ import TimeTable from 'react-timetable-events'
 
 export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, courseData,
     avoidGroupList, setAvoidGroupList,
-    registeredCourseList, setRegisteredCourseList, timetable }) => {
+    registeredCourseList, setRegisteredCourseList, timetable, conflictLogs }) => {
 
     const [show, setShow] = useState(false)
+    const [showLogs, setShowLogs] = useState(false)
     const navigate = useNavigate()
 
     // if courseData length is empty, then cannot proceed to process data
@@ -57,6 +58,9 @@ export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, course
                 <form className="container-fluid justify-content-start">
                     <button onClick={(event) => handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed <i className="fa-solid fa-play"></i></button>
                     <button onClick={() => setShow(true)} className="btn btn-sm btn-outline-secondary me-2" type="button">peek current timetable <i className="fa-regular fa-eye"></i></button>
+                    {conflictLogs.length > 0 && (
+                        <button onClick={() => setShowLogs(true)} className="btn btn-sm btn-outline-danger me-2" type="button">view conflict logs <i className="fa-regular fa-eye"></i></button>
+                    )}
                 </form>
             </nav>
             {/**for each course exist in the courseData state variable, I want to iterate this component below */}
@@ -88,6 +92,33 @@ export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, course
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={() => setShow(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showLogs} size="lg">
+                <Modal.Header>Conflict logs</Modal.Header>
+                <Modal.Body>
+                    <div className="container text-center border-danger">
+                        {conflictLogs.map((log, index) => (
+                            <>
+                                <div className="row border-danger" style={{ fontSize: '12px' }} key={index}>
+                                    {log.map((group, index) => (
+                                        <div className="col mb-2" key={index}>
+                                            <ul className="list-group">
+                                                <li className="list-group-item">{group.course_name}</li>
+                                                <li className="list-group-item">{group.group_name}</li>
+                                                <li className="list-group-item" style={{ whiteSpace: 'nowrap' }}>{group.time_start} - {group.time_end}</li>
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                                <hr />
+                            </>
+                        ))}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowLogs(false)}>Close</Button>
                 </Modal.Footer>
             </Modal>
         </>

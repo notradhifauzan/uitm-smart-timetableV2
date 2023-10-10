@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { Button, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
 import { Loading } from '../components/Loading';
 import { DataReady } from '../components/DataReady';
 
-export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, registeredCourseList, timetable, setTimetable }) => {
+export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
+    registeredCourseList, timetable, setTimetable, conflictLogs, setConflictLogs }) => {
     const navigate = useNavigate()
     const [newSortedDays, setSortedDays] = useState([])
     const [clashCount, setClashCount] = useState(1);
@@ -13,6 +15,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
     const [loading, setLoading] = useState(false);
     const [enableProcessButton, setEnableProcessButton] = useState(false);
     const [dataSent, setDataSent] = useState(false);
+    const [showLogs, setShowLogs] = useState(false);
 
     // if courseData length is empty, then cannot proceed to process data
     useEffect(() => {
@@ -25,8 +28,6 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
         } else {
             setEnableProcessButton(true)
         }
-
-        console.log(JSON.stringify(responseMessage) === '{}')
     }, [])
 
     const sendDataToAPI = async () => {
@@ -51,6 +52,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                 const data = await response.json();
                 setResponseMessage(data.chromosome);
                 setClashCount(data.clashes);
+                setConflictLogs(data.conflict_logs);
             } else {
                 throw new Error('Failed to send data');
             }
@@ -95,7 +97,6 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
 
     useEffect(() => {
         if (!loading && Array.isArray(responseMessage)) {
-            console.log('loading finished, initializing events')
             // Check if responseMessage is an array
             const events = {};
             // Loop through responseMessage and populate events
@@ -111,7 +112,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
                             name: `${course.name} - ${group.name}`,
                             startTime: new Date(timeStartISO), // Adjust the date as needed
                             endTime: new Date(timeEndISO), // Adjust the date as needed
-                            type: 'custom', // Set the event type as needed
+                            type: 'error', // Set the event type as needed
                         };
 
                         // Determine the day of the week (e.g., "monday")
@@ -129,14 +130,11 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
             });
 
             setTimetable(events);
-        } else {
-            console.log('still loading')
         }
     }, [loading, responseMessage]) // wait for loading and response message, then can setTimetable
 
     useEffect(() => {
         // Sort the days of the week
-        console.log('sorting days...')
         const sortedDays = Object.keys(timetable).sort((day1, day2) => {
             // Convert day names to numbers (0 for Sunday, 1 for Monday, etc.)
             const dayOfWeek = {
@@ -154,8 +152,6 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
 
         setSortedDays(sortedDays)
     }, [timetable]) // wait for timetable variable to be fully initialize, then can run this again
-
-
 
     const isButtonSendEnabled = () => {
         if (loading) {
@@ -206,7 +202,13 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
 
                 {(dataSent && !loading) && (
                     clashCount > 0 ? (
-                        <span className="badge rounded-pill text-bg-warning me-3">{clashCount} clash found</span>
+                        <button onClick={() => setShowLogs(true)} type="button" className="btn btn-sm btn-outline-danger position-relative me-3">
+                            clash <i className="fa-solid fa-burst"></i>
+                            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {clashCount}
+                                <span className="visually-hidden">clash count</span>
+                            </span>
+                        </button>
                     ) : (
                         <span className="badge rounded-pill text-bg-success me-3">No clash found</span>
                     )
@@ -241,6 +243,33 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions, regi
             {(enableProcessButton && JSON.stringify(responseMessage) === '{}' && !loading) && (
                 <DataReady />
             )}
+
+            <Modal show={showLogs} size="lg">
+                <Modal.Header>Conflict logs</Modal.Header>
+                <Modal.Body>
+                    <div className="container text-center border-danger">
+                        {conflictLogs.map((log, index) => (
+                            <>
+                                <div className="row border-danger" style={{ fontSize: '12px' }} key={index}>
+                                    {log.map((group, index) => (
+                                        <div className="col mb-2" key={index}>
+                                            <ul className="list-group">
+                                                <li className="list-group-item">{group.course_name}</li>
+                                                <li className="list-group-item">{group.group_name}</li>
+                                                <li className="list-group-item" style={{ whiteSpace: 'nowrap' }}>{group.time_start} - {group.time_end}</li>
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                                <hr />
+                            </>
+                        ))}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowLogs(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

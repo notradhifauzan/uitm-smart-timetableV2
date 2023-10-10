@@ -37,6 +37,7 @@ export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    // navigate to select campus page if campus code or courselist value is missing
     useEffect(()=>{
         if(campusCode.length === 0 || courseList.length === 0){
             return navigate("/selectCampus",{replace:true})

@@ -147,7 +147,7 @@ export const CourseDetails = ({ course, index, randomizeOptions, setRandomizeOpt
             <div className="card-body">
                 <div className="row">
                     <div className="col-md-6">
-                        <h5 className="card-title" style={customStyle}>Preferred course</h5>
+                        <h5 className="card-title" style={customStyle}>Preferred group</h5>
                         <select className="form-select" onChange={(event) => handleRandomizeOptionsArray(index, event)}>
                             <option value={""}>I'm flexible</option>
                             {course.groups.map((group) => (
@@ -177,7 +177,7 @@ export const CourseDetails = ({ course, index, randomizeOptions, setRandomizeOpt
                                 <li className="list-group-item">empty list</li>
                             )}
                             {avoidGroupList[index].map((item) => (
-                                <li className="list-group-item d-flex justify-content-between align-items-center" key={item}>
+                                <li className="list-group-item list-group-item-danger d-flex justify-content-between align-items-center" key={item}>
                                     {item}
                                     <button
                                         onClick={() => handleRemoveItemFromExcludeGroupList(item, index)}

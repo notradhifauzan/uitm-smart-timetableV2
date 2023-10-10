@@ -13,7 +13,8 @@ export const AllRoutes = () => {
     const [avoidGroupList, setAvoidGroupList] = useState([[]]);
     const [randomizeOptions, setRandomizeOptions] = useState([]);
     const [registeredCourseList, setRegisteredCourseList] = useState([]);
-    const [timetable,setTimetable] = useState({})
+    const [timetable,setTimetable] = useState({});
+    const [conflictLogs,setConflictLogs] = useState([]);
 
     return (
         <>
@@ -63,6 +64,8 @@ export const AllRoutes = () => {
                                 registeredCourseList={registeredCourseList}
                                 timetable = {timetable}
                                 setTimetable = {setTimetable}
+                                conflictLogs = {conflictLogs}
+                                setConflictLogs = {setConflictLogs}
                             />
                         }
                     />
@@ -78,6 +81,7 @@ export const AllRoutes = () => {
                                 registeredCourseList={registeredCourseList}
                                 setRegisteredCourseList={setRegisteredCourseList}
                                 timetable = {timetable}
+                                conflictLogs = {conflictLogs}
                             />}>
                     </Route>
                 </Routes>
