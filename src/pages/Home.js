@@ -5,7 +5,7 @@ export const Home = () => {
   const navigate = useNavigate();
 
   const getStarted = () => {
-    return navigate("/selectCampus")
+    return navigate("/inputCourses")
   }
 
   return (

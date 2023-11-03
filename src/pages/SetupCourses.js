@@ -44,6 +44,7 @@ export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions
         }
     },[])
 
+    // fetch course data sequentially
     useEffect(() => {
         // Function to fetch course data for a single course code
         const fetchCourseData = async (code) => {

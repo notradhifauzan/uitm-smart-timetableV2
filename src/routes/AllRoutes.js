@@ -4,6 +4,7 @@ import { Home, SelectCampus, SelectCourses } from '../pages/index';
 import { SetupCourses } from '../pages/SetupCourses';
 import { ProcessData } from '../pages/ProcessData';
 import { ConfigureCourses } from '../pages/ConfigureCourses';
+import { InputCourses } from '../pages/InputCourses';
 
 export const AllRoutes = () => {
     const [facultyCode, setFacultyCode] = useState("");
@@ -21,6 +22,7 @@ export const AllRoutes = () => {
             <Router>
                 <Routes>
                     <Route path='/' element={<Home />}></Route>
+                    <Route path='/inputCourses' element={<InputCourses />}></Route>
                     <Route path='/selectCampus' element={
                         <SelectCampus
                             campusCode={campusCode}

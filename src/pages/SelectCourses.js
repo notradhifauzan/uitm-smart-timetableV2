@@ -6,15 +6,6 @@ import { useState, useEffect, useRef } from 'react'
 export const SelectCourses = ({ facultyCode,setFacultyCode,campusCode, courseList, setCourseList }) => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (campusCode.length === 0) {
-            console.log('campus code is empty')
-            return navigate("/selectCampus", { replace: true })
-        } else {
-
-        }
-    }, [])
-
 
     // handling ui
     const [showSuggestion, setShowSuggestion] = useState(false);
@@ -111,8 +102,6 @@ export const SelectCourses = ({ facultyCode,setFacultyCode,campusCode, courseLis
         const updatedCourseList = courseList.filter(course => course !== course_id);
         setCourseList(updatedCourseList);
     }
-
-
 
     return (
         <>
