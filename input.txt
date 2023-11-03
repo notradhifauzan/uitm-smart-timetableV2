@@ -7,6 +7,7 @@ csc577
 csc569
 csc584
 csc566
+ent600
 
 
 so far this is the best test case to experiment things
