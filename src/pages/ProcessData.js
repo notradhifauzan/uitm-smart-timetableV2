@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import TimeTable from 'react-timetable-events';
 import { Loading } from '../components/Loading';
 import { DataReady } from '../components/DataReady';
+import { LineChart } from '../components/LineChart';
 
 export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
-    registeredCourseList, timetable, setTimetable, conflictLogs, setConflictLogs }) => {
+    registeredCourseList, timetable, setTimetable, conflictLogs, setConflictLogs, demoMode }) => {
     const navigate = useNavigate()
     const [newSortedDays, setSortedDays] = useState([])
     const [clashCount, setClashCount] = useState(1);
@@ -16,21 +17,35 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
     const [enableProcessButton, setEnableProcessButton] = useState(false);
     const [dataSent, setDataSent] = useState(false);
     const [showLogs, setShowLogs] = useState(false);
+    const [convergenceArray, setConvergenceArray] = useState([])
+    const [populationSize, setPopulationSize] = useState(10);
+    const [numGeneration, setNumGeneration] = useState(20);
+    const [mutationRate, setMutationRate] = useState(0.1);
+    const [showChart, setShowChart] = useState(false);
+    const [showParameterConfiguration, setShowParameterConfiguration] = useState(false);
+    const [maxScore,setMaxScore] = useState(0);
+
+    useEffect(()=>{
+        console.log(avoidGroupList)
+        console.log(JSON.stringify(avoidGroupList))
+    },[])
 
     // if courseData length is empty, then cannot proceed to process data
     useEffect(() => {
+        setMaxScore(avoidGroupList.length);
         if (registeredCourseList.length === 0 || randomizeOptions.length === 0 ||
             avoidGroupList.length === 0) {
             console.log('some values are missing. cannot process your data')
             setEnableProcessButton(false)
 
-            return navigate("/selectCampus", { replace: true });
+            return navigate("/inputCourses", { replace: true });
         } else {
             setEnableProcessButton(true)
         }
     }, [])
 
     const sendDataToAPI = async () => {
+        setShowParameterConfiguration(false);
         setLoading(true);
         try {
             const payload = {
@@ -38,6 +53,9 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
                 uw_group_list: avoidGroupList,
                 randomize_options: randomizeOptions,
                 registered_course: registeredCourseList,
+                population_size: populationSize,
+                num_generation: numGeneration,
+                mutation_rate: mutationRate
             };
 
             const response = await fetch('http://127.0.0.1:8000/process_data', {
@@ -50,14 +68,18 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
 
             if (response.ok) {
                 const data = await response.json();
+                setConvergenceArray(data.convergence_list);
                 setResponseMessage(data.chromosome);
                 setClashCount(data.clashes);
                 setConflictLogs(data.conflict_logs);
+                setShowChart(true);
             } else {
                 throw new Error('Failed to send data');
+                setShowChart(false);
             }
         } catch (error) {
             console.error('Error:', error);
+            setShowChart(false);
         } finally {
             setLoading(false);
             setDataSent(true);
@@ -163,9 +185,9 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
 
     const isButtonConfigureEnabled = () => {
         if (loading) {
-            return 'btn btn-sm btn-outline-secondary ms-2 disabled'
+            return 'btn btn-sm btn-outline-secondary ms-2 disabled text-white'
         } else {
-            return 'btn btn-sm btn-outline-secondary ms-2'
+            return 'btn btn-sm btn-outline-secondary ms-2 text-white'
         }
     }
 
@@ -181,16 +203,24 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
         border: '1px solid #000',
     };
 
+    const configureParameters = () => {
+        if (!demoMode) {
+            sendDataToAPI();
+        } else {
+            setShowParameterConfiguration(true);
+        }
+    }
+
     return (
         <div>
             {!enableProcessButton && (
                 <div className="alert alert-warning mt-3" role="alert">
-                    Some parameters are missing, go back to 'selectCampus' page
+                    Some parameters are missing, go back to 'inputCourses' page
                 </div>
             )}
 
             <nav className="navbar navbar-expand-lg bg-body-tertiary mt-4 mb-2" style={navbarStyle}>
-                <button onClick={sendDataToAPI} className={isButtonSendEnabled()} type="button">
+                <button onClick={()=>configureParameters()} className={isButtonSendEnabled()} type="button">
                     {dataSent ? 'run again' : 'start algorithm'} <i className="fa-solid fa-shuffle"></i>
                 </button>
 
@@ -232,7 +262,7 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
                 }, {})}
 
                     style={{ height: '500px' }}
-                    hoursInterval={{ from: 8, to: 19 }}
+                    hoursInterval={{ from: 8, to: 20 }}
                 />
             )}
 
@@ -242,6 +272,42 @@ export const ProcessData = ({ courseData, avoidGroupList, randomizeOptions,
 
             {(enableProcessButton && JSON.stringify(responseMessage) === '{}' && !loading) && (
                 <DataReady />
+            )}
+
+            <Modal show={showParameterConfiguration} size='lg'>
+                <Modal.Header>configure genetic parameters</Modal.Header>
+                <Modal.Body>
+                    <div className="mb-3">
+                        <label htmlFor="populationSize" className="form-label">Population size</label>
+                        <input value={populationSize} onChange={(event)=>setPopulationSize(event.target.value)} type="number" className="form-control" id="populationSize" />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="numGenerations" className="form-label">Num generations</label>
+                        <input value={numGeneration} onChange={(event)=>setNumGeneration(event.target.value)} type="number" className="form-control" id="numGenerations" />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="mutationRate" className="form-label">Mutation Rate</label>
+                        <input value={mutationRate} onChange={(event)=>setMutationRate(event.target.value)} type="number" className="form-control" id="mutationRate" min="0.01" max="0.9" step="0.01" />
+                    </div>
+                    <div className="mb-3">
+                        <Button onClick={sendDataToAPI}>Run</Button>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowParameterConfiguration(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {(JSON.stringify(responseMessage) !== '{}') && (
+                <Modal show={showChart} size='lg'>
+                    <Modal.Header>Convergence result</Modal.Header>
+                    <Modal.Body>
+                        <LineChart chartData={convergenceArray} maxScore={maxScore}/>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={() => setShowChart(false)}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
             )}
 
             <Modal show={showLogs} size="lg">

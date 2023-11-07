@@ -4,13 +4,15 @@ import { AllRoutes } from './routes/AllRoutes';
 function App() {
 
   return (
-    <div className="App">
+    <>
       <Header></Header>
-      <main>
-        <AllRoutes/>
-      </main>
+      <div className="App container">
+        <main>
+          <AllRoutes />
+        </main>
+      </div>
       <Footer></Footer>
-    </div>
+    </>
   );
 }
 

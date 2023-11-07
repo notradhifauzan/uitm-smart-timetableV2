@@ -1,35 +1,11 @@
-test case #1
-
 tjc501
-elc650
+https://simsweb4.uitm.edu.my/estudent/class_timetable/index_tt.cfm?id1=4BB2E4C4F4EBACBEAA2D2C995F9F94BD46B8&id2=57C5D5B3D983B590FACB4C53849EA2428B9A
 csc508
+https://simsweb4.uitm.edu.my/estudent/class_timetable/index_tt.cfm?id1=4BB2E4C4F4FCB5BEAA2D25995F9F94BD46B8&id2=57C5D5B3D994AC90FACB4553849EA2428B9A
 csc577
+https://simsweb4.uitm.edu.my/estudent/class_timetable/index_tt.cfm?id1=4BB2E4C4F4FCB5BEAA2A2A995F9F94BD46B8&id2=57C5D5B3D994AC90FACC4A53849EA2428B9A
 csc569
 csc584
 csc566
 ent600
-
-
-so far this is the best test case to experiment things
-
-============================================================
-
-test case #2
-
-csc508
-csc577
-ent600
-csc584
-tjc501
-csc566
-
-=============================================================
-
-test case #3
-
-ICT652
-CSC662
-CSP650
-CSC683
-CSC566
-CSC580
+elc650

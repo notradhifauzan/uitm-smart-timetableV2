@@ -7,8 +7,6 @@ import { ConfigureCourses } from '../pages/ConfigureCourses';
 import { InputCourses } from '../pages/InputCourses';
 
 export const AllRoutes = () => {
-    const [facultyCode, setFacultyCode] = useState("");
-    const [campusCode, setCampusCode] = useState("");
     const [courseList, setCourseList] = useState([]);
     const [courseData, setCourseData] = useState({});
     const [avoidGroupList, setAvoidGroupList] = useState([[]]);
@@ -16,44 +14,34 @@ export const AllRoutes = () => {
     const [registeredCourseList, setRegisteredCourseList] = useState([]);
     const [timetable,setTimetable] = useState({});
     const [conflictLogs,setConflictLogs] = useState([]);
+    const [demoMode,setDemoMode] = useState(false);
 
     return (
         <>
             <Router>
                 <Routes>
                     <Route path='/' element={<Home />}></Route>
-                    <Route path='/inputCourses' element={<InputCourses />}></Route>
-                    <Route path='/selectCampus' element={
-                        <SelectCampus
-                            campusCode={campusCode}
-                            setCampusCode={setCampusCode}
-                            facultyCode={facultyCode}
-                            setFacultyCode={setFacultyCode}
-                        />
-                    }></Route>
+                    <Route path='/inputCourses' element={<InputCourses courseList={courseList} setCourseList={setCourseList} setDemoMode={setDemoMode} />}></Route>
                     <Route
                         path='/selectCourses'
                         element={
                             <SelectCourses
-                                facultyCode = {facultyCode}
-                                campusCode={campusCode}
                                 courseList={courseList}
                                 setCourseList={setCourseList} />
                         }>
                     </Route>
                     <Route path='/setupCourses' element={
                         <SetupCourses
-                            facultyCode = {facultyCode}
                             randomizeOptions={randomizeOptions}
                             setRandomizeOptions={setRandomizeOptions}
                             courseData={courseData}
                             setCourseData={setCourseData}
-                            campusCode={campusCode}
                             courseList={courseList}
                             avoidGroupList={avoidGroupList}
                             setAvoidGroupList={setAvoidGroupList}
                             registeredCourseList={registeredCourseList}
                             setRegisteredCourseList={setRegisteredCourseList}
+                            demoMode={demoMode}
                         />
                     }>
                     </Route>
@@ -68,6 +56,7 @@ export const AllRoutes = () => {
                                 setTimetable = {setTimetable}
                                 conflictLogs = {conflictLogs}
                                 setConflictLogs = {setConflictLogs}
+                                demoMode ={demoMode}
                             />
                         }
                     />

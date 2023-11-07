@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { CourseDetails } from './CourseDetails';
 import { useNavigate } from 'react-router-dom';
+import { CourseData } from '../components/course_data';
+import { AGL } from '../components/custom_configurations';
 
 class RegisteredCourse {
     constructor(name) {
@@ -28,75 +30,92 @@ class Session {
     }
 }
 
-export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions, courseData,
-    setCourseData, campusCode, courseList,
+export const SetupCourses = ({ randomizeOptions, setRandomizeOptions, courseData,
+    setCourseData, courseList,
     avoidGroupList, setAvoidGroupList,
-    registeredCourseList, setRegisteredCourseList }) => {
+    registeredCourseList, setRegisteredCourseList,demoMode }) => {
 
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // navigate to select campus page if campus code or courselist value is missing
-    useEffect(()=>{
-        if(campusCode.length === 0 || courseList.length === 0){
-            return navigate("/selectCampus",{replace:true})
-        }
-    },[])
-
     // fetch course data sequentially
     useEffect(() => {
-        // Function to fetch course data for a single course code
-        const fetchCourseData = async (code) => {
-            let url = '';
-            if(facultyCode == ''){
-                url = `http://127.0.0.1:8000/get_course_data/${campusCode}/${code}`;
-            } else {
-                url = `http://127.0.0.1:8000/get_course_data/${campusCode}/${code}?faculty_code=${facultyCode}`;
-            }
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(response.statusText);
+        if(!demoMode){
+            // Function to fetch course data for a single course code
+            const fetchCourseData = async (course) => {
+                let url = '';
+                url = `http://127.0.0.1:8000/get_course_data`;
+    
+                const payload = {
+                    course_link: course.course_link
+                };
+    
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error(response.statusText);
+                    }
+                    const result = await response.json();
+                    // Store the course data in the state using the course code as the key
+                    setCourseData((prevData) => ({
+                        ...prevData,
+                        [course.name]: result.course_data,
+                    }));
+                } catch (error) {
+                    console.log(error.message);
+                    setError(error.message);
                 }
-                const result = await response.json();
-                // Store the course data in the state using the course code as the key
-                setCourseData((prevData) => ({
-                    ...prevData,
-                    [code]: result.course_data,
-                }));
-            } catch (error) {
-                console.log(error.message);
-                setError(error.message);
-            }
-        };
-
-        // Make API calls for each course code in courseList in order
-        setLoading(true);
-        setError("");
-        const fetchSequentially = async () => {
-            for (const code of courseList) {
-                await fetchCourseData(code);
-            }
-            setLoading(false);
-        };
-
-        fetchSequentially();
-    }, [campusCode, courseList]);
+            };
+    
+            // Make API calls for each course code in courseList in order
+            setLoading(true);
+            setError("");
+            const fetchSequentially = async () => {
+                for (const code of courseList) {
+                    await fetchCourseData(code);
+                }
+                setLoading(false);
+            };
+    
+            fetchSequentially();
+        } else {
+            setCourseData(CourseData);
+        }
+    }, [courseList]);
 
     // initialize randomize options array, set to true
     // initialize unwanted group list, set the length to courseList.length
     // initialize list of registeredCourse
     useEffect(() => {
-        const newRandomizeOptions = Array(courseList.length).fill(true);
-        setRandomizeOptions(newRandomizeOptions);
+        if(!demoMode){
+            const newRandomizeOptions = Array(courseList.length).fill(true);
+            setRandomizeOptions(newRandomizeOptions);
+    
+            const uwGroupLists = Array.from({ length: courseList.length }, () => []);
+            setAvoidGroupList(uwGroupLists);
+    
+            const rcList = Array.from({ length: courseList.length }, () => []);
+            setRegisteredCourseList(rcList);
+        } else {
+            const newRandomizeOptions = Array(Object.keys(CourseData).length).fill(true);
+            setRandomizeOptions(newRandomizeOptions);
+    
+            const uwGroupLists = Array.from({ length: Object.keys(CourseData).length }, () => []);
+            setAvoidGroupList(uwGroupLists);
+    
+            const rcList = Array.from({ length: Object.keys(CourseData).length }, () => []);
+            setRegisteredCourseList(rcList);
 
-        const uwGroupLists = Array.from({ length: courseList.length }, () => []);
-        setAvoidGroupList(uwGroupLists);
-
-        const rcList = Array.from({ length: courseList.length }, () => []);
-        setRegisteredCourseList(rcList);
+            setAvoidGroupList(AGL);
+        }
 
     }, [courseList, setRandomizeOptions]);
 
@@ -132,12 +151,6 @@ export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions
         return navigate("/processData")
     }
 
-    useEffect(() => {
-        if (!loading && Object.keys(courseData).length === courseList.length) {
-            //console.log(randomizeOptions);
-        }
-    }, [courseData, courseList, loading, randomizeOptions]);
-
     if (loading) {
         return (
             <div className="d-flex align-items-center mt-4">
@@ -145,8 +158,6 @@ export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions
                 <div className="spinner-border ms-auto" aria-hidden="true"></div>
             </div>
         );
-    } else {
-        //console.log(courseData);
     }
 
     if (error) {
@@ -165,7 +176,7 @@ export const SetupCourses = ({ facultyCode,randomizeOptions, setRandomizeOptions
         <>
             <nav className="navbar bg-body-tertiary mt-3" style={navbarStyle}>
                 <form className="container-fluid justify-content-start">
-                    <button onClick={(event)=>handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed <i className="fa-solid fa-play"></i></button>
+                    <button onClick={(event) => handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed <i className="fa-solid fa-play"></i></button>
                 </form>
             </nav>
             {/**for each course exist in the courseData state variable, I want to iterate this component below */}

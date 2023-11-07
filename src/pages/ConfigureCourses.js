@@ -57,7 +57,7 @@ export const ConfigureCourses = ({ randomizeOptions, setRandomizeOptions, course
             <nav className="navbar bg-body-tertiary mt-3" style={navbarStyle}>
                 <form className="container-fluid justify-content-start">
                     <button onClick={(event) => handleProceedButton(event)} className="btn btn-sm btn-outline-success me-2" type="button">Proceed <i className="fa-solid fa-play"></i></button>
-                    <button onClick={() => setShow(true)} className="btn btn-sm btn-outline-secondary me-2" type="button">peek current timetable <i className="fa-regular fa-eye"></i></button>
+                    <button onClick={() => setShow(true)} className="btn btn-sm btn-outline-secondary me-2 text-white" type="button">peek current timetable <i className="fa-regular fa-eye"></i></button>
                     {conflictLogs.length > 0 && (
                         <button onClick={() => setShowLogs(true)} className="btn btn-sm btn-outline-danger me-2" type="button">view conflict logs <i className="fa-regular fa-eye"></i></button>
                     )}
