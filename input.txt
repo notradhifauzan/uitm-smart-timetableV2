@@ -7,5 +7,19 @@ https://simsweb4.uitm.edu.my/estudent/class_timetable/index_tt.cfm?id1=4BB2E4C4F
 csc569
 csc584
 csc566
+<<<<<<< HEAD
+=======
+ent600
+
+
+so far this is the best test case to experiment things
+
+============================================================
+
+test case #2
+
+csc508
+csc577
+>>>>>>> 402f638dce569d175ed9c7aa74cfe26bfe2cc76d
 ent600
 elc650
